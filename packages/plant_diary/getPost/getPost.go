@@ -37,7 +37,6 @@ func Main(json Payload) map[string]Post {
 	}
 	defer conn.Close(ctx)
 
-	var post Post
 	selectQuery := "SELECT id,title,body,slug,url,cover_image,updated_at,published_at from post where slug = $1 and published_at is not null"
 	err = pgxscan.Get(ctx, conn, &post, selectQuery, json.Slug)
 	if err != nil {
