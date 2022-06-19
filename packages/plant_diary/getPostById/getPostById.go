@@ -29,7 +29,7 @@ func Main(json Payload) map[string]Post {
 	var post Post
 	response := map[string]Post{"body": post}
 	ctx := context.Background()
-	conn, err := pgx.Connect(ctx, os.Getenv("DATABSE_URL"))
+	conn, err := pgx.Connect(ctx, os.Getenv("DATABASE_URL"))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
 		os.Exit(1)
