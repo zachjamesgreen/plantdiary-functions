@@ -33,19 +33,29 @@ type Post struct {
 	Published  bool      `json:"published"`
 }
 
-func Main(data map[string]interface{}) map[string]Post {
+type Response struct {
+	Body  Post   `json:"body"`
+	Error string `json:"error"`
+	Code  int    `json:"code"`
+}
+
+func Main(data map[string]interface{}) (response Response) {
 	fmt.Println("Starting editPost")
 	body := data["__ow_body"].(string)
 	var r_post RequestPost
 	err := json.Unmarshal([]byte(body), &r_post)
 	if err != nil {
-		fmt.Println(err)
+		response.Error = err.Error()
+		response.Code = 500
+		return response
 	}
 	ctx := context.Background()
 	conn, err := pgx.Connect(ctx, os.Getenv("DATABASE_URL"))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
-		os.Exit(1)
+		response.Error = err.Error()
+		response.Code = 500
+		return response
 	}
 	defer conn.Close(ctx)
 
@@ -54,26 +64,31 @@ func Main(data map[string]interface{}) map[string]Post {
 		query := "insert into post (title,body,slug,url,cover_image,published) values ($1,$2,$3,$4,$5,$6) returning id"
 		err := conn.QueryRow(ctx, query, r_post.Title, r_post.Body, r_post.Slug, r_post.Url, r_post.CoverImage, r_post.Published).Scan(&r_post.ID)
 		if err != nil {
-			fmt.Println(err)
+			response.Error = err.Error()
+			response.Code = 500
+			return response
 		}
 	} else {
 		insertQuery := "UPDATE post set title = $1, body = $2, slug = $3, url = $4, cover_image = $5, updated_at = $6, published = $7 WHERE id = $8"
 		_, err = conn.Exec(ctx, insertQuery, r_post.Title, r_post.Body, r_post.Slug, r_post.Url, r_post.CoverImage, time.Now(), r_post.Published, r_post.ID)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
-			os.Exit(1)
+			response.Error = err.Error()
+			response.Code = 500
+			return response
 		}
 	}
 
 	var post Post
-	response := map[string]Post{}
 	selectQuery := "select id,title,body,slug,url,cover_image,updated_at,published from post where id = $1"
 	err = pgxscan.Get(ctx, conn, &post, selectQuery, r_post.ID)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
-		os.Exit(1)
+		response.Error = err.Error()
+		response.Code = 500
+		return response
 	}
 
-	response["body"] = post
+	response.Body = post
 	return response
 }
