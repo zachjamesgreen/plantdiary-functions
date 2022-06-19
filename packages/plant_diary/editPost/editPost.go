@@ -12,7 +12,7 @@ import (
 )
 
 type RequestPost struct {
-	ID         string    `json:"id"`
+	ID         int       `json:"id"`
 	Title      string    `json:"title"`
 	Body       string    `json:"body"`
 	Slug       string    `json:"slug"`
@@ -38,6 +38,7 @@ func Main(data map[string]interface{}) map[string]Post {
 	body := data["__ow_body"].(string)
 	var r_post RequestPost
 	err := json.Unmarshal([]byte(body), &r_post)
+	fmt.Println(r_post.ID)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -49,7 +50,9 @@ func Main(data map[string]interface{}) map[string]Post {
 	}
 	defer conn.Close(ctx)
 
-	if r_post.ID == "" {
+	fmt.Println("Request post ID")
+	fmt.Println(r_post.ID)
+	if r_post.ID == 0 {
 		fmt.Println("Creating new post")
 		query := "insert into post (title,body,slug,url,cover_image,published) values ($1,$2,$3,$4,$5,$6) returning id"
 		var id int
@@ -57,7 +60,7 @@ func Main(data map[string]interface{}) map[string]Post {
 		if err != nil {
 			fmt.Println(err)
 		}
-		r_post.ID = fmt.Sprintf("%d", id)
+		// r_post.ID = fmt.Sprintf("%d", id)
 	} else {
 		insertQuery := "UPDATE post set title = $1, body = $2, slug = $3, url = $4, cover_image = $5, updated_at = $6, published = $7 WHERE id = $8"
 		_, err = conn.Exec(ctx, insertQuery, r_post.Title, r_post.Body, r_post.Slug, r_post.Url, r_post.CoverImage, time.Now(), r_post.Published, r_post.ID)
