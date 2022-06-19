@@ -33,7 +33,7 @@ type Post struct {
 	Published  bool      `json:"published"`
 }
 
-func Main(data map[string]interface{}) map[string]interface{} {
+func Main(data map[string]interface{}) map[string]Post {
 	fmt.Println("Starting editPost")
 	body := data["__ow_body"].(string)
 	var r_post RequestPost
@@ -75,7 +75,7 @@ func Main(data map[string]interface{}) map[string]interface{} {
 		os.Exit(1)
 	}
 
-	response := make(map[string]interface{})
+	response := map[string]Post{}
 	response["body"] = post
 	// response["statusCode"] = 500
 	return response
