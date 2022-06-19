@@ -38,6 +38,7 @@ func Main(data map[string]interface{}) map[string]Post {
 	body := data["__ow_body"].(string)
 	var r_post RequestPost
 	err := json.Unmarshal([]byte(body), &r_post)
+	fmt.Println(r_post)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "JSON Unmarshal failed: %v\n", err)
 		os.Exit(1)
