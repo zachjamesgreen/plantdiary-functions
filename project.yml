@@ -1,0 +1,57 @@
+targetNamespace: ''
+parameters: {}
+packages:
+  - name: plant_diary
+    environment: 
+      DO_SPACES_KEY: "${DO_SPACES_KEY}"
+      DO_SPACES_SECRET: "${DO_SPACES_SECRET}"
+      DATABASE_URL: "${DATABSE_URL}"
+    parameters: {}
+    annotations: {}
+    actions:
+      - name: upload
+        binary: false
+        main: ''
+        runtime: 'go:default'
+        web: true
+        parameters: {}
+        environment: {}
+        annotations: {}
+        limits: 
+          timeout: 5000
+      - name: savePost
+        binary: false
+        main: ''
+        runtime: 'go:default'
+        web: true
+        environment: {}
+        annotations: {}
+        limits: 
+          timeout: 5000
+      - name: getImageCards
+        binary: false
+        main: ''
+        runtime: 'go:default'
+        web: true
+        environment: {}
+        annotations: {}
+        limits: 
+          timeout: 5000
+      - name: getPost
+        binary: false
+        main: ''
+        runtime: 'go:default'
+        web: true
+        environment: {}
+        annotations: {}
+        limits: 
+          timeout: 5000
+      - name: editPost
+        binary: false
+        main: ''
+        runtime: 'go:default'
+        web: true
+        environment: {}
+        annotations: {}
+        limits: 
+          timeout: 5000
