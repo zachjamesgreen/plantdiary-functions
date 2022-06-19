@@ -22,7 +22,8 @@ func Main(args map[string]interface{}) map[string]interface{} {
 	msg := make(map[string]interface{})
 	fmt.Println("Starting getImageCards")
 	ctx := context.Background()
-	conn, err := pgx.Connect(ctx, os.Getenv("DATABSE_URL"))
+	// conn, err := pgx.Connect(ctx, os.Getenv("DATABSE_URL"))
+	conn, err := pgx.Connect(ctx, os.Getenv("APP_DATABASE_URL"))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
 		os.Exit(1)

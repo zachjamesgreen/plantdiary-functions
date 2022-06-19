@@ -2,10 +2,7 @@ targetNamespace: ''
 parameters: {}
 packages:
   - name: plant_diary
-    environment:
-      DO_SPACES_KEY: "${APP_DO_SPACES_KEY}"
-      DO_SPACES_SECRET: "${APP_DO_SPACES_SECRET}"
-      DATABASE_URL: "${APP_DATABASE_URL}"
+    environment: {}
     parameters: {}
     annotations: {}
     actions:
