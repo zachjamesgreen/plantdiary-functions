@@ -4,18 +4,19 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/georgysavva/scany/pgxscan"
 	"github.com/jackc/pgx/v4"
 )
 
 type Post struct {
-	ID          int    `json:"id"`
-	Title       string `json:"title"`
-	Slug        string `json:"slug"`
-	PublishedAt bool   `json:"published_at" db:"published_at"`
-	Url         string `json:"url"`
-	CoverImage  string `json:"cover_image" `
+	ID          int       `json:"id"`
+	Title       string    `json:"title"`
+	Slug        string    `json:"slug"`
+	PublishedAt time.Time `json:"published_at" db:"published_at"`
+	Url         string    `json:"url"`
+	CoverImage  string    `json:"cover_image" `
 }
 
 func Main(args map[string]interface{}) map[string]interface{} {
