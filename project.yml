@@ -5,7 +5,7 @@ packages:
     environment: 
       DO_SPACES_KEY: "${DO_SPACES_KEY}"
       DO_SPACES_SECRET: "${DO_SPACES_SECRET}"
-      DATABASE_URL: "${DATABSE_URL}"
+      DATABASE_URL: "${DATABASE_URL}"
     parameters: {}
     annotations: {}
     actions:
