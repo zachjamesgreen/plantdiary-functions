@@ -36,3 +36,12 @@ packages:
         annotations: {}
         limits: 
           timeout: 5000
+      - name: getPostById
+        binary: false
+        main: ''
+        runtime: 'go:default'
+        web: true
+        environment: {}
+        annotations: {}
+        limits: 
+          timeout: 5000
