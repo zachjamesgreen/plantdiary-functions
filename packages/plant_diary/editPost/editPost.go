@@ -33,12 +33,6 @@ type Post struct {
 	Published  bool      `json:"published"`
 }
 
-// type Response struct {
-// 	Body       Post   `json:"body"`
-// 	StatusCode int    `json:"statusCode"`
-// 	Error      string `json:"error"`
-// }
-
 func Main(data map[string]interface{}) map[string]interface{} {
 	fmt.Println("Starting editPost")
 	body := data["__ow_body"].(string)
