@@ -3,9 +3,9 @@ parameters: {}
 packages:
   - name: plant_diary
     environment:
-      DO_SPACES_KEY: "${DO_SPACES_KEY}"
-      DO_SPACES_SECRET: "${DO_SPACES_SECRET}"
-      DATABASE_URL: "${DATABASE_URL}"
+      DO_SPACES_KEY: "${APP_DO_SPACES_KEY}"
+      DO_SPACES_SECRET: "${APP_DO_SPACES_SECRET}"
+      DATABASE_URL: "${APP_DATABASE_URL}"
     parameters: {}
     annotations: {}
     actions:
