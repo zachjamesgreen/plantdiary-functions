@@ -33,14 +33,13 @@ type Post struct {
 	Published  bool      `json:"published"`
 }
 
-type Response struct {
-	Body       Post   `json:"body"`
-	StatusCode int    `json:"statusCode"`
-	Error      string `json:"error"`
-}
+// type Response struct {
+// 	Body       Post   `json:"body"`
+// 	StatusCode int    `json:"statusCode"`
+// 	Error      string `json:"error"`
+// }
 
 func Main(data map[string]interface{}) map[string]interface{} {
-	response := make(map[string]interface{})
 	fmt.Println("Starting editPost")
 	body := data["__ow_body"].(string)
 	var r_post RequestPost
@@ -82,7 +81,8 @@ func Main(data map[string]interface{}) map[string]interface{} {
 		os.Exit(1)
 	}
 
+	response := make(map[string]interface{})
 	response["body"] = post
-	response["statusCode"] = 500
+	// response["statusCode"] = 500
 	return response
 }
