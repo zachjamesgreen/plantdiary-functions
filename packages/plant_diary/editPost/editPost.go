@@ -19,7 +19,7 @@ type RequestPost struct {
 	Url        string    `json:"url"`
 	CoverImage string    `json:"cover_image"`
 	UpdatedAt  time.Time `json:"updated_at"`
-	Published  time.Time `json:"published_at" db:"published_at"`
+	Published  bool      `json:"published"`
 }
 
 type Post struct {
@@ -30,7 +30,7 @@ type Post struct {
 	Url        string    `json:"url"`
 	CoverImage string    `json:"cover_image"`
 	UpdatedAt  time.Time `json:"updated_at"`
-	Published  time.Time `json:"published_at" db:"published_at"`
+	Published  bool      `json:"published"`
 }
 
 func Main(data map[string]interface{}) map[string]Post {
@@ -51,15 +51,15 @@ func Main(data map[string]interface{}) map[string]Post {
 
 	if r_post.ID == "" {
 		fmt.Println("Creating new post")
-		query := "insert into post (title,body,slug,url,cover_image,updated_at,published_at) values ($1,$2,$3,$4,$5,$6,$7) returning id"
+		query := "insert into post (title,body,slug,url,cover_image,published) values ($1,$2,$3,$4,$5,$6) returning id"
 		var id int
-		err := conn.QueryRow(ctx, query, r_post.Title, r_post.Body, r_post.Slug, r_post.Url, r_post.CoverImage, time.Now(), r_post.Published).Scan(&id)
+		err := conn.QueryRow(ctx, query, r_post.Title, r_post.Body, r_post.Slug, r_post.Url, r_post.CoverImage, r_post.Published).Scan(&id)
 		if err != nil {
 			fmt.Println(err)
 		}
 		r_post.ID = fmt.Sprintf("%d", id)
 	} else {
-		insertQuery := "UPDATE post set title = $1, body = $2, slug = $3, url = $4, cover_image = $5, updated_at = $6, published_at = $7 WHERE id = $8"
+		insertQuery := "UPDATE post set title = $1, body = $2, slug = $3, url = $4, cover_image = $5, updated_at = $6, published = $7 WHERE id = $8"
 		_, err = conn.Exec(ctx, insertQuery, r_post.Title, r_post.Body, r_post.Slug, r_post.Url, r_post.CoverImage, time.Now(), r_post.Published, r_post.ID)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
@@ -69,7 +69,7 @@ func Main(data map[string]interface{}) map[string]Post {
 
 	var post Post
 	response := map[string]Post{}
-	selectQuery := "select id,title,body,slug,url,cover_image,updated_at,published_at from post where id = $1"
+	selectQuery := "select id,title,body,slug,url,cover_image,updated_at,published from post where id = $1"
 	err = pgxscan.Get(ctx, conn, &post, selectQuery, r_post.ID)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
