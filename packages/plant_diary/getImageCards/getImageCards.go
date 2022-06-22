@@ -21,11 +21,14 @@ type Post struct {
 
 func Main(args map[string]interface{}) map[string]interface{} {
 	fmt.Println("Starting getImageCards")
+	response := make(map[string]interface{})
 	ctx := context.Background()
 	conn, err := pgx.Connect(ctx, os.Getenv("DATABASE_URL"))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
-		os.Exit(1)
+		response["body"] = fmt.Sprintf("Unable to connect to database: %v\n", err)
+		response["statusCode"] = 500
+		return response
 	}
 	defer conn.Close(ctx)
 
@@ -33,15 +36,18 @@ func Main(args map[string]interface{}) map[string]interface{} {
 	rows, err := conn.Query(ctx, query)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
-		os.Exit(1)
+		response["body"] = fmt.Sprintf("QueryRow failed: %v\n", err)
+		response["statusCode"] = 500
+		return response
 	}
 	var posts []Post
 	if err := pgxscan.ScanAll(&posts, rows); err != nil {
 		fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
-		os.Exit(1)
+		response["body"] = fmt.Sprintf("QueryRow failed: %v\n", err)
+		response["statusCode"] = 500
+		return response
 	}
 
-	msg := make(map[string]interface{})
-	msg["body"] = posts
-	return msg
+	response["body"] = posts
+	return response
 }

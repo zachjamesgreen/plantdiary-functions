@@ -25,15 +25,17 @@ type Post struct {
 	PublishedAt time.Time `json:"published_at"`
 }
 
-func Main(json Payload) map[string]Post {
+func Main(json Payload) map[string]interface{} {
 	fmt.Println("Starting savePost")
 	var post Post
-	response := map[string]Post{"body": post}
+	response := make(map[string]interface{})
 	ctx := context.Background()
 	conn, err := pgx.Connect(ctx, os.Getenv("DATABASE_URL"))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
-		os.Exit(1)
+		response["body"] = fmt.Sprintf("Unable to connect to database: %v\n", err)
+		response["statusCode"] = 500
+		return response
 	}
 	defer conn.Close(ctx)
 
@@ -41,7 +43,9 @@ func Main(json Payload) map[string]Post {
 	err = pgxscan.Get(ctx, conn, &post, selectQuery, json.Slug)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
-		os.Exit(1)
+		response["body"] = fmt.Sprintf("QueryRow failed: %v\n", err)
+		response["statusCode"] = 500
+		return response
 	}
 
 	response["body"] = post

@@ -25,22 +25,26 @@ type Post struct {
 	Published  bool      `json:"published"`
 }
 
-func Main(json Payload) map[string]Post {
+func Main(json Payload) map[string]interface{} {
 	fmt.Println("Starting getPostById")
 	var post Post
-	response := map[string]Post{"body": post}
+	response := make(map[string]interface{})
 	ctx := context.Background()
 	conn, err := pgx.Connect(ctx, os.Getenv("DATABASE_URL"))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
-		os.Exit(1)
+		response["body"] = fmt.Sprintf("Unable to connect to database: %v\n", err)
+		response["statusCode"] = 500
+		return response
 	}
 	defer conn.Close(ctx)
 
 	query := "select id,title,body,slug,url,cover_image,updated_at,published from post where id = $1"
 	if err = pgxscan.Get(ctx, conn, &post, query, json.ID); err != nil {
 		fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
-		os.Exit(1)
+		response["body"] = fmt.Sprintf("QueryRow failed: %v\n", err)
+		response["statusCode"] = 500
+		return response
 	}
 
 	response["body"] = post
