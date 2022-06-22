@@ -26,7 +26,7 @@ type Post struct {
 }
 
 func Main(json Payload) map[string]interface{} {
-	fmt.Println("Starting savePost")
+	fmt.Println("Starting getPost")
 	var post Post
 	response := make(map[string]interface{})
 	ctx := context.Background()
@@ -42,8 +42,8 @@ func Main(json Payload) map[string]interface{} {
 	selectQuery := "SELECT id,title,body,slug,url,cover_image,updated_at,published_at from post where slug = $1 and published_at is not null"
 	err = pgxscan.Get(ctx, conn, &post, selectQuery, json.Slug)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
-		response["body"] = fmt.Sprintf("QueryRow failed: %v\n", err)
+		fmt.Fprintf(os.Stderr, "QueryRow failed for <%v>: %v\n", json.Slug, err)
+		response["body"] = fmt.Sprintf("QueryRow failed for <%v>: %v\n", json.Slug, err)
 		response["statusCode"] = 500
 		return response
 	}

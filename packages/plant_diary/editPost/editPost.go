@@ -54,7 +54,6 @@ func Main(r_post RequestPost) map[string]interface{} {
 			response["body"] = fmt.Sprintf("Insert failed: %v\n", err)
 			response["statusCode"] = 500
 			return response
-			// os.Exit(1)
 		}
 	} else {
 		insertQuery := "UPDATE post set title = $1, body = $2, slug = $3, url = $4, cover_image = $5, updated_at = $6, published = $7 WHERE id = $8"
