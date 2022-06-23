@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/georgysavva/scany/pgxscan"
+	"github.com/jackc/pgtype"
 	"github.com/jackc/pgx/v4"
 )
 
@@ -47,8 +48,12 @@ func Main(r_post RequestPost) map[string]interface{} {
 
 	if r_post.ID == 0 {
 		fmt.Println("Creating new post")
-		query := "insert into post (title,body,slug,url,cover_image,published) values ($1,$2,$3,$4,$5,$6) returning id"
-		err := conn.QueryRow(ctx, query, r_post.Title, r_post.Body, r_post.Slug, r_post.Url, r_post.CoverImage, r_post.Published).Scan(&r_post.ID)
+		var p pgtype.Timestamp
+		if r_post.Published {
+			p.Time = time.Now()
+		}
+		query := "insert into post (title,body,slug,url,cover_image,published, published_at) values ($1,$2,$3,$4,$5,$6,$7) returning id"
+		err := conn.QueryRow(ctx, query, r_post.Title, r_post.Body, r_post.Slug, r_post.Url, r_post.CoverImage, r_post.Published, p).Scan(&r_post.ID)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Insert failed: %v\n", err)
 			response["body"] = fmt.Sprintf("Insert failed: %v\n", err)
