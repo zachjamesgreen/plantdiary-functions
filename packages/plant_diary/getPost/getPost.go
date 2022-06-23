@@ -15,14 +15,14 @@ type Payload struct {
 }
 
 type Post struct {
-	ID          int       `json:"id"`
-	Title       string    `json:"title"`
-	Body        string    `json:"body"`
-	Slug        string    `json:"slug"`
-	Url         string    `json:"url"`
-	CoverImage  string    `json:"cover_image"`
-	UpdatedAt   time.Time `json:"updated_at"`
-	PublishedAt time.Time `json:"published_at"`
+	ID         int       `json:"id"`
+	Title      string    `json:"title"`
+	Body       string    `json:"body"`
+	Slug       string    `json:"slug"`
+	Url        string    `json:"url"`
+	CoverImage string    `json:"cover_image"`
+	UpdatedAt  time.Time `json:"updated_at"`
+	// PublishedAt time.Time `json:"published_at"`
 }
 
 func Main(json Payload) map[string]interface{} {
@@ -39,7 +39,7 @@ func Main(json Payload) map[string]interface{} {
 	}
 	defer conn.Close(ctx)
 
-	selectQuery := "SELECT id,title,body,slug,url,cover_image,updated_at,published_at from post where slug = $1 and published_at is not null"
+	selectQuery := "SELECT id,title,body,slug,url,cover_image,updated_at from post where slug = $1 and published is true"
 	err = pgxscan.Get(ctx, conn, &post, selectQuery, json.Slug)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "QueryRow failed for <%v>: %v\n", json.Slug, err)
