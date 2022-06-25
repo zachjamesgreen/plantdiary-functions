@@ -22,6 +22,7 @@ type Post struct {
 	Url        string    `json:"url"`
 	CoverImage string    `json:"cover_image"`
 	UpdatedAt  time.Time `json:"updated_at"`
+	CreatedAt  time.Time `json:"created_at"`
 	Published  bool      `json:"published"`
 }
 
