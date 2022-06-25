@@ -9,7 +9,7 @@ import (
 )
 
 type Payload struct {
-	ID string
+	ID int
 }
 
 func Main(json Payload) map[string]interface{} {
@@ -33,8 +33,8 @@ func Main(json Payload) map[string]interface{} {
 		return response
 	}
 	if command.RowsAffected() != 1 {
-		fmt.Fprintf(os.Stderr, "No row found to delete for <%v>: %v\n", json.ID, err)
-		response["body"] = fmt.Sprintf("No row found to delete for <%v>: %v\n", json.ID, err)
+		fmt.Fprintf(os.Stderr, "No row found to delete for <%v>\n", json.ID)
+		response["body"] = fmt.Sprintf("No row found to delete for <%v>\n", json.ID)
 		response["statusCode"] = 404
 		return response
 	}
