@@ -56,6 +56,7 @@ func Main(r_post RequestPost) map[string]interface{} {
 			return response
 		}
 	} else {
+		fmt.Println("Updating post")
 		insertQuery := "UPDATE post set title = $1, body = $2, slug = $3, url = $4, cover_image = $5, updated_at = $6, published = $7 WHERE id = $8"
 		_, err = conn.Exec(ctx, insertQuery, r_post.Title, r_post.Body, r_post.Slug, r_post.Url, r_post.CoverImage, time.Now(), r_post.Published, r_post.ID)
 		if err != nil {
